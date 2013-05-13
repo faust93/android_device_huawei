@@ -1,0 +1,103 @@
+# RIL
+ro.telephony.ril_class=RIL
+rild.libpath=/system/lib/libxgold-ril.so
+rild.libargs=-d /dev/xmd-tty0
+mobiledata.interfaces=pdp0,wlan0,gprs,ppp0,rmnet0
+ro.ril.enable.dtm=1
+ro.ril.gprsclass=12
+ro.ril.hsdpa.category=10
+ro.ril.hsupa.category=6
+ro.ril.hsxpa=2
+
+# Default network type.
+# 0 => WCDMA preferred.
+ro.telephony.default_network=0
+
+# For the default value of agps
+ro.ril.def.agps.mode=2
+
+# For HSDPA low throughput
+ro.ril.disable.power.collapse=1
+
+# Ril sends only one RIL_UNSOL_CALL_RING, so set call_ring.multiple to false
+ro.telephony.call_ring.multiple=0
+#
+audioril.lib=libhuawei-audio-ril.so
+modem.audio=1
+com.ti.omap_enhancement=true
+dolby.audio.hdmi.channels=0
+
+ro.config.fm_type=libbcmfm_if
+ro.config.KeyPassToUser=true
+ro.config.incall_notify_mms=true
+ro.config.endstksession=true
+ro.config.fast_dormancy = false
+ro.config.do_sdcard_upgrade=true
+ro.config.internal_sdcard=yes
+ro.config.sim_hot_swap=true
+ro.config.bg_call_twinking = true
+ro.config.helix_a_enable=false
+ro.config.helix_b_enable=false
+#ro.config.helix_e_enable=true
+ro.config.doublehome=true
+ro.config.switchPrimaryVolume=true
+ro.config.CphsOnsEnabled=false
+ro.poweroff_alarm=true
+ro.sf.lcd_density=240
+ro.huawei.cust.drm.fl_only=false
+ro.opengles.version=131072
+#
+ro.config.hw_dolby_config=viva
+ro.config.hw_proximitySensor=true
+ro.config.hw_GSensorOptimize=true
+ro.config.hw_vcardBase64=true
+ro.config.hw_isCustomize=true
+ro.config.hw_customizeType=1
+ro.config.hw_addsettingsdbex=1
+ro.config.hw_menu_unlockscreen=false
+ro.config.hw_ramSize=930504
+ro.config.hw_power_saving=true
+ro.config.hw_quickpoweron=true
+ro.config.hw_omacp=1
+ro.config.hw_voicerecord=true
+ro.config.hw_flashless=false
+ro.config.hw_poanimation=5000
+ro.config.hw_allow_ums_and_mtp=true
+ro.config.hw_dolby=true
+ro.config.hw_gps=4751
+ro.config.hw_pic_limit_size=50
+ro.config.hw_battery_percent = true
+ro.config.hw_uninstall_dataapp=true
+ro.config.hw_remindBT=true
+#
+persist.sys.quickpoweron=normal
+persist.sys.animationstart=false
+persist.sys.powerup_reason=
+persist.sys.actualpoweron=true
+persist.sys.main_storage=sdcard0
+#
+hw.net.tcp.buffersize.default=4096,262140,523264,4096,49152,523264
+hw.net.tcp.buffersize.umts=4096,262140,523264,4096,49152,523264
+hw.net.tcp.buffersize.edge=4096,78840,105120,4096,49152,105120
+hw.net.tcp.buffersize.gprs=4096,26280,35040,4096,26280,35040
+hw.net.tcp.buffersize.hspa=4096,262140,523264,4096,49152,523264
+#
+windowsmgr.max_events_per_sec=150
+ro.max.fling_velocity=12000
+ro.min.fling_velocity=8000
+media.stagefright.enable-player=true
+media.stagefright.enable-meta=true
+media.stagefright.enable-scan=false
+media.stagefright.enable-http=true
+profiler.force_disable_err_rpt=1
+profiler.force_disable_ulog=1
+net.dns1=8.8.4.4
+net.dns2=8.8.8.8
+#
+ro.kernel.android.checkjni = 0
+gsm.sim.num.pin2=3
+gsm.sim.num.puk2=10
+drm.service.enabled=false
+media.aac_51_output_enabled=true
+hwui.render_dirty_regions=true
+wifi.interface=wlan0

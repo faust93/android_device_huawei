@@ -1,0 +1,7 @@
+[
+ {
+   "repository": "android_kernel_huawei_viva",
+   "target_path": "kernel/huawei/viva",
+   "branch": "jellybean"
+ }
+]

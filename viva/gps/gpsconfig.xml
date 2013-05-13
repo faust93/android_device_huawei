@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<glgps xmlns="http://www.glpals.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.glpals.com/ glconfig.xsd" >
+  <!--HAL Confguration  -->
+  
+  <hal 
+       acPortName="/dev/ttyO3"
+       lBaudRate="115200"
+       gpioNStdbyPath="/sys/class/gpio/gpio166/value"
+       gpioNResetPath="/sys/class/gpio/gpio161/value"
+       gpioDelayMs="250"
+       acNvStoDir="/data/gps/"
+       cLogEnabled="false"
+       acLogDirectory="/data/gps/log/" 
+            	   
+       arp-supl-enable="true"
+       arp-supl-cap-msb="true"
+       arp-supl-cap-msa="true"
+       arp-supl-cap-ecid="false"
+       arp-supl-use-apn="false"
+       acSuplServer="supl.google.com"
+       SuplPort="7275"
+       ReAidingIntervalSec="1200"
+       SuplUT1Seconds="20"
+       SuplUT2Seconds="20"
+       SuplUT3Seconds="20"
+       SuplVersion="1"
+	   
+       LbsEnable="true"
+       LbsLocal="false"
+       LbsServer="BCMLS2.glpals.com"
+       LbsPort="7275"
+       LbsSyncLto="false"
+       SyncLto="true"
+       ltoFileName="lto2.dat"	   
+       acLtoDir="/data/gps/"      
+       LbsSyncLtoThresholdDays="3"
+       LbsTAC="10101222"
+       LbsWlanEnable="false"
+	acNmeaOutName="/data/gps/gpspipe"  
+	ctrlPipe="/data/gps/glgpsctrl"	
+   />
+  
+  <hal 
+    SensorsEnable="true"
+    SensorsMask="0F"
+    SensorsLog="true"
+    SensorsMoEnable="true" 
+    SensorsTurnEnable="false"
+    SensorsRawAcclGyroEnable="true"
+  />
+
+  <gll 
+       LogPriMask="LOG_INFO"
+       LogFacMask="LOG_GLLAPI | LOG_NMEA | LOG_RAWDATA" 
+       FrqPlan="FRQ_PLAN_26MHZ_2PPM_26MHZ_300PPB"   
+   RfType="GL_RF_4751_DANUBE_EXT_LNA"   
+       WarmStandbyTimeout1Seconds="10"
+       WarmStandbyTimeout2Seconds="15"
+  >
+  </gll>
+  
+  <gll_features
+	   EnableLowPowerEls="true"
+	   EnableLowPowerPmm="true"	   
+  />
+<job id="Periodic">
+    <task>
+        <req_pos/>
+    </task>
+</job>
+  
+</glgps>

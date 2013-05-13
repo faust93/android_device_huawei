@@ -1,0 +1,687 @@
+import init.viva.usb.rc
+
+on early-init
+
+
+    # See storage config details at http://source.android.com/tech/storage/
+    mkdir /mnt 0775 root system
+    mkdir /mnt/shell 0700 shell shell
+    mkdir /storage 0050 root sdcard_r
+
+    mkdir /mnt/shell/emulated 0700 shell shell
+    mkdir /storage/emulated 0555 root root
+    export EXTERNAL_STORAGE /storage/emulated/legacy
+    export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
+    export EMULATED_STORAGE_TARGET /storage/emulated
+
+    mkdir /storage/sdcard1 0000 system system
+    export SECONDARY_STORAGE /storage/sdcard1
+
+    symlink /storage/emulated/legacy /sdcard
+    symlink /storage/emulated/legacy /mnt/sdcard
+    symlink /storage/emulated/legacy /storage/sdcard0
+    symlink /mnt/shell/emulated/0 /storage/emulated/legacy
+
+    mkdir /mnt/emmc 0000 system system
+    symlink /storage/sdcard1 /emmc
+    symlink /storage/sdcard1 /mnt/emmc
+
+# change permissions for ION driver
+      chmod 0777 /dev/ion
+
+# We chown/chmod /factory because mount is run as root + defaults
+	chown radio radio /factory
+	chmod 0775 /factory
+
+# add symlink for HDCP key
+        symlink /factory/hdcp.keys /system/vendor/firmware/hdcp.keys
+
+
+on post-fs-data
+
+        mkdir /data/share 0775 media_rw media_rw
+        chown media_rw media_rw /data/share
+        mkdir /data/smc 0770 drmrpc drmrpc
+        chown drmrpc drmrpc /data/smc/counter.bin
+        chown drmrpc drmrpc /data/smc/storage.bin
+        chown drmrpc drmrpc /data/smc/system.bin
+
+
+	setprop vold.post_fs_data_done 1
+
+
+
+    chown system system /sys/class/android_usb/android0/f_mass_storage/lun/file
+    chmod 0660 /sys/class/android_usb/android0/f_mass_storage/lun/file
+    chown system system /sys/class/android_usb/android0/f_rndis/ethaddr
+    chmod 0660 /sys/class/android_usb/android0/f_rndis/ethaddr
+
+    chown system system /sys/class/android_usb/f_mass_storage/suitestate
+    chmod 0660 /sys/class/android_usb/f_mass_storage/suitestate
+    chown system system /sys/class/android_usb/android0/f_mass_storage/lun1/file
+    chmod 0660 /sys/class/android_usb/android0/f_mass_storage/lun1/file
+
+
+    mkdir /dev/cpuctl/fg_boost
+    chown system system /dev/cpuctl/fg_boost/tasks
+    chmod 0777 /dev/cpuctl/fg_boost/tasks
+    write /dev/cpuctl/fg_boost/cpu.shares 1024
+
+    mkdir /dev/cpuctl/bg_non_interactive
+    chown system system /dev/cpuctl/bg_non_interactive/tasks
+    chmod 0777 /dev/cpuctl/bg_non_interactive/tasks
+    # 5.0 %
+    write /dev/cpuctl/bg_non_interactive/cpu.shares 52
+
+    #<DTS2011121404047 jKF31740 20111214 modify begin
+    chown system system /sys/class/backlight/lcd/brightness
+    #DTS2011121404047 jKF31740 20111214 modify end>
+    #DTS2011120302674    z00190171   2011/12/03  add for sensors update version.I begin
+    chown system system /sys/devices/platform/i2c_omap.4/i2c-4/4-0012/leds/button-backlight-tk/brightness
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-0012/leds/button-backlight-tk/brightness
+    chown system system /sys/devices/platform/TK-backlight/leds/button-backlight-tk/brightness
+    #DTS2011120302674    z00190171   2011/12/03  add for sensors update version.I end
+    #<DTS2011121301877 z00190171 2011/12/13 modify for front control touchKey leds begin
+    chown system system /sys/class/leds/button-backlight-tk/brightness
+    #DTS2011121301877 z00190171 2011/12/13 modify for front control touchKey leds end>    #<DTS2011121404047 jKF31740 20111214 modify begin
+    chown system system /sys/class/backlight/lcd/brightness
+    #DTS2011121404047 jKF31740 20111214 modify end>
+    #DTS2011120302674    z00190171   2011/12/03  add for sensors update version.I begin
+    chown system system /sys/devices/platform/i2c_omap.4/i2c-4/4-0012/leds/button-backlight-tk/brightness
+	chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-0012/leds/button-backlight-tk/brightness
+    chown system system /sys/devices/platform/TK-backlight/leds/button-backlight-tk/brightness
+    #DTS2011120302674    z00190171   2011/12/03  add for sensors update version.I end
+    #<DTS2011121301877 z00190171 2011/12/13 modify for front control touchKey leds begin
+    chown system system /sys/class/leds/button-backlight-tk/brightness
+    #DTS2011121301877 z00190171 2011/12/13 modify for front control touchKey leds end>
+#DTS2011120302674    z00190171   2011/12/03  add for sensors update version.I begin
+    chown system system /sys/bus/i2c/drivers/lis3dh_acc/4-0018/enable
+    chown system system /sys/bus/i2c/drivers/lis3dh_acc/4-0018/pollrate_ms
+    chown system system /sys/bus/i2c/drivers/lis3dh_acc/4-0018/range
+#DTS2012011300630 g00192882 2012/02/19 add begin
+    chown system system /sys/bus/i2c/drivers/lis3dh_acc/4-0018/accl_data
+    chown system system /sys/bus/i2c/drivers/lis3dh_acc/4-0018/accl_info
+#DTS2012011300630 g00192882 2012/02/19 add end
+
+    chown system system /sys/bus/i2c/drivers/l3g4200d_gyr/4-0068/enable_device
+    chown system system /sys/bus/i2c/drivers/l3g4200d_gyr/4-0068/pollrate_ms
+    chown system system /sys/bus/i2c/drivers/l3g4200d_gyr/4-0068/range
+#DTS2012011300630 g00192882 2012/02/19 add begin
+    chown system system /sys/bus/i2c/drivers/l3g4200d_gyr/4-0068/enable_selftest
+#DTS2012011300630 g00192882 2012/02/19 add end
+
+    chown system system /sys/bus/i2c/drivers/adxl34x/4-0053/enable
+    chown system system /sys/bus/i2c/drivers/adxl34x/4-0053/pollrate_ms
+    chown system system /sys/bus/i2c/drivers/adxl34x/4-0053/range
+    chown system system /sys/bus/i2c/drivers/mma8452/4-001c/enable
+    chown system system /sys/bus/i2c/drivers/mma8452/4-001c/pollrate_ms
+    chown system system /sys/bus/i2c/drivers/mma8452/4-001c/range
+#DTS2012011300630 g00192882 2012/02/19 add begin
+    chown system system /sys/bus/i2c/drivers/mma8452/4-001c/position
+    chown system system /sys/bus/i2c/drivers/mma8452/4-001c/accl_data
+#DTS2012011300630 g00192882 2012/02/19 add end
+    chmod 0660 /sys/bus/i2c/drivers/apds990x/4-0039/*
+    chown system system /sys/bus/i2c/drivers/apds990x/4-0039/enable_ps_sensor
+    chown system system /sys/bus/i2c/drivers/apds990x/4-0039/enable_als_sensor
+    chown system system /sys/bus/i2c/drivers/apds990x/4-0039/als_poll_delay
+# DTS2012021400374 g00192882 2012/02/14 add begin
+    chown system system /sys/bus/i2c/drivers/ltr-558/4-0023/enable_ps_sensor
+    chown system system /sys/bus/i2c/drivers/ltr-558/4-0023/enable_als_sensor
+    chown system system /sys/bus/i2c/drivers/tps61310/3-0033/tps61310_led_lightness
+# DTS2012021400374 g00192882 2012/02/14 add end
+#DTS2011120302674    z00190171   2011/12/03  add for sensors update version.I end
+#DTS2012021003349 wkf40768 20120210 leds set color yellow to orange begin
+    chown system system /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0045/leds/red/delay_on
+    chown system system /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0045/leds/red/delay_off
+    chown system system /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0045/leds/green/delay_on
+    chown system system /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0045/leds/green/delay_off
+    chown system system /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0045/leds/blue/delay_on
+    chown system system /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0045/leds/blue/delay_off
+#DTS2012021003349 wkf40768 20120210 leds set color yellow to orange end
+#DTS2012021007117 w00172421 2012/02/10  modify i2c node authority  begin
+    #led lightness
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.3/i2c-3/3-0033/tps61310_led_lightness
+    
+    #leds
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0045/leds/three_colors_led/delay_on
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0045/leds/three_colors_led/delay_off
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0045/leds/red/delay_on
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0045/leds/red/delay_off
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0045/leds/green/delay_on
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0045/leds/green/delay_off
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0045/leds/blue/delay_on
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0045/leds/blue/delay_off
+    
+    #compass
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-000c/compass_info
+    
+    #lis3dh
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0018/pollrate_ms
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0018/range
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0018/enable
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0018/int1_config
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0018/int1_duration
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0018/int1_threshold
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0018/int1_source
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0018/click_config
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0018/click_source
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0018/click_threshold
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0018/click_timelatency
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0018/click_timelimit
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0018/click_timewindow
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0018/accl_data
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0018/accl_info
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0018/reg_value
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0018/reg_addr
+    
+    #l3g4200d
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0068/pollrate_ms
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0068/range
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0068/enable_device
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0068/enable_selftest
+    
+    #sensor
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0039/enable_als_sensor
+    chmod 0664 /sys/devices/platform/omap/omap_i2c.4/i2c-4/4-0039/enable_ps_sensor
+    
+    #battery
+    chmod 0664 /sys/bus/i2c/drivers/bq27510-battery/state
+    chmod 0664 /sys/bus/i2c/drivers/bq27510-battery/gaugelog
+        
+#DTS2012021007117 w00172421 2012/02/10  modify i2c node authority end
+
+#DTS2012011200528 l00178492 2012-1-12 begin >>>
+chown system system /dev/block/platform/omap/omap_hsmmc.1/by-name/oeminfo
+chmod 0660 /dev/block/platform/omap/omap_hsmmc.1/by-name/oeminfo
+#DTS2012011200528 l00178492 2012-1-12 end <<<
+
+
+
+
+on boot
+	mount debugfs /sys/kernel/debug /sys/kernel/debug
+	chmod 0666 /dev/pvrsrvkm
+	chmod 0444 /system/usr/keychars/omap4-keypad.kcm.bin
+	setprop ro.crypto.keyfile.userdata /dev/block/platform/omap/omap_hsmmc.1/by-name/crypto
+
+	chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+	chown system system /sys/devices/system/cpu/cpufreq/interactive/lpspeed_freq
+	chown system system /sys/devices/system/cpu/cpufreq/interactive/lpspeed_enabled
+	chown system system /sys/devices/omapdss/display0/cabc_mode
+	chown system system /sys/module/pvrsrvkm/parameters/sgx_freq_restrict
+	# DTS2012032406795 l00210892 20120326 begin
+	chown system system /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
+	chown system system /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
+# Boost the CPU for 30 secs during boot
+	write /sys/devices/system/cpu/cpufreq/interactive/boost_timeout 30000000
+	write /sys/devices/system/cpu/cpu0/cpufreq/boost_cpufreq 1
+
+# autosuspend root hubs immediatly after attached devices
+	write /sys/bus/usb/devices/usb1/power/autosuspend_delay_ms 0
+	write /sys/bus/usb/devices/usb2/power/autosuspend_delay_ms 0
+
+
+
+    mkdir /data/misc/wifi 0770 wifi wifi
+    chown wifi wifi /data/misc/wifi
+    mkdir /data/misc/wifi/sockets 0770 wifi wifi
+    chown wifi wifi /data/misc/wifi/p2p_supplicant.conf
+    chmod 0660 /data/misc/wifi/p2p_supplicant.conf
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
+    chown dhcp dhcp /data/misc/dhcp
+
+# GPS
+	insmod /system/lib/modules/gps_drv.ko
+
+on fs
+        mkdir /factory 0775 radio radio
+	mount ext4 /dev/block/platform/omap/omap_hsmmc.1/by-name/system /system wait 
+	setprop ro.crypto.tmpfs_options size=128m,mode=0771,uid=1000,gid=1000
+	#DTS2011122804252 z00192785 2011-12-29 begin
+	mount ext4 /dev/block/platform/omap/omap_hsmmc.1/by-name/cust /cust wait ro
+	#DTS2011122804252 z00192785 2011-12-29 end
+        #DTS2012011102409  z00176770 20110112 begin
+        #DTS2012021007060  z00176770 20120210 begin
+        mount ext4 /dev/block/platform/omap/omap_hsmmc.1/by-name/userdata /data wait nosuid nodev mblk_io_submit,data=writeback,commit=15,barrier=0,noauto_da_alloc,discard
+        #DTS2012021007060  z00176770 20120210 end
+        #DTS2012011102409  z00176770 20110112 end
+	mount ext4 /dev/block/platform/omap/omap_hsmmc.1/by-name/cache /cache wait noatime nosuid nodev nomblk_io_submit
+#/*<start: DTS2011122703394 d00186307 kernel boot time optimize*/
+#	mount ext4 /dev/block/platform/omap/omap_hsmmc.1/by-name/efs /factory wait ro
+#/*<end: DTS2011122703394 d00186307 kernel boot time optimize >*/
+	setprop ro.crypto.fuse_sdcard true
+
+# H264 Encoder Profile setting
+# 1 - Base Profile
+# 2 - Main Profile
+# 8 - High Profile
+	setprop video.h264enc.profile 1
+# nvm
+#DTS2011102902318 	w00177577	2011/10/29	front add nvm1 nvm2 partition begin
+#DTS2011121307804    x00186570	2011/12/16   change for managing modem image begin
+	mount rootfs rootfs / rw remount
+	mkdir /modem
+	mkdir /modem/modem_image
+	mkdir /modem/nvm1
+	mkdir /modem/nvm2
+	mount ext4 /dev/block/platform/omap/omap_hsmmc.1/by-name/modemimage /modem/modem_image wait noatime nosuid nodev
+	mount ext4 /dev/block/platform/omap/omap_hsmmc.1/by-name/modemnvm1 /modem/nvm1 wait noatime nosuid nodev
+	mount ext4 /dev/block/platform/omap/omap_hsmmc.1/by-name/modemnvm2 /modem/nvm2 wait noatime nosuid nodev
+	mount rootfs rootfs / ro remount
+#DTS2011121307804    x00186570	2011/12/16   change for managing modem image end
+#DTS2011102902318 	w00177577	2011/10/29	front add nvm1 nvm2 partition end
+
+# change permissions for ION driver
+    chmod 0777 /dev/ion
+
+# We chown/chmod /factory because mount is run as root + defaults
+	chown radio radio /factory
+	chmod 0775 /factory
+
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 18d1
+    write /sys/class/android_usb/android0/idProduct D002
+    write /sys/class/android_usb/android0/functions ${sys.usb.config}
+    write /sys/class/android_usb/android0/enable 1
+    start adbd
+    setprop sys.usb.state ${sys.usb.config}
+# add symlink for HDCP key
+        symlink /factory/hdcp.keys /system/vendor/firmware/hdcp.keys
+#<DTS2011120807567   y00197631    2011/12/08 begin
+#    chown media media /dev/audience_es305
+#	chown media media /dev/ttyO0
+#DTS2011120807567   y00197631    2011/12/08  end
+
+
+# This property trigger has added to imitiate the previous behavior of "adb root".
+# The adb gadget driver used to reset the USB bus when the adbd daemon exited,
+# and the host side adb relied on this behavior to force it to reconnect with the
+# new adbd instance after init relaunches it. So now we force the USB bus to reset
+# here when adbd sets the service.adb.root property to 1.  We also restart adbd here
+# rather than waiting for init to notice its death and restarting it so the timing
+# of USB resetting and adb restarting more closely matches the previous behavior.
+    write /sys/class/android_usb/android0/enable 0
+    restart adbd
+    write /sys/class/android_usb/android0/enable 1
+
+# add symlink for nxp noise-supression
+    symlink /vendor/etc/nxp_viva /data/nxp
+
+
+# /* DTS2011081605546 y00185015 Added begin for xgold-ril configuration  */
+# change permissions for modem
+    chmod 0660 /dev/xmd-tty0
+    chmod 0660 /dev/xmd-tty1
+    chmod 0660 /dev/xmd-tty2
+    chmod 0660 /dev/xmd-tty3
+    chmod 0660 /dev/xmd-tty4
+    chmod 0660 /dev/xmd-tty5
+    chmod 0660 /dev/xmd-tty6
+    chmod 0660 /dev/xmd-tty7
+    chmod 0660 /dev/xmd-tty8
+    chmod 0660 /dev/xmd-tty9
+    chmod 0660 /dev/xmd-tty10
+    chmod 0660 /dev/xmd-tty11
+#    chmod 0660 /dev/xmd-tty*
+
+    chown radio radio /dev/xmd-tty0
+    chown radio radio /dev/xmd-tty1
+    chown radio radio /dev/xmd-tty2
+    chown radio radio /dev/xmd-tty3
+    chown radio radio /dev/xmd-tty4
+    chown system system /dev/xmd-tty5
+    chown system system /dev/xmd-tty6
+    chown radio radio /dev/xmd-tty7
+    chown radio radio /dev/xmd-tty8
+    chown media media /dev/xmd-tty8
+    chown radio radio /dev/xmd-tty9
+    chown radio radio /dev/xmd-tty10
+    chown radio radio /dev/xmd-tty11
+    chmod 0664 /sys/devices/platform/xmm_boot/state
+    chmod 0660 /sys/devices/platform/xmm_boot/io
+    chmod 0660 /sys/devices/platform/xmm_boot/power
+    chown radio radio /sys/devices/platform/xmm_boot/state
+    chown radio radio /sys/devices/platform/xmm_boot/io
+    chown radio radio /sys/devices/platform/xmm_boot/power
+# /* DTS2011081605546 y00185015 Added end for xgold-ril configuration */
+# /* DTS2012022304490 j00174217 20120326 add begin */
+    chmod 0660 /sys/devices/platform/xmm_boot/cp_shutdown
+    chown radio radio /sys/devices/platform/xmm_boot/cp_shutdown
+# /* DTS2012022304490 j00174217 20120326 add begin */
+
+# change permissions for bq2416x_charger
+     chmod 0660 /sys/bus/i2c/devices/1-006b/enable_charger
+     chown system system /sys/bus/i2c/devices/1-006b/enable_charger
+     chmod 0660 /sys/bus/i2c/devices/1-006b/calling_limit
+     chown system system /sys/bus/i2c/devices/1-006b/calling_limit
+
+#DTS2011102902318 	w00177577	2011/10/29	front add nvm1 nvm2 partition begin
+#DTS2011121307804    x00186570	2011/12/16   change for managing modem image begin
+    chmod 0660 /modem/modem_image/HWT6260.fls
+    chmod 0660 /modem/nvm1/calib.nvm
+    chmod 0660 /modem/nvm1/dynamic.nvm
+    chmod 0660 /modem/nvm1/static.nvm
+    chmod 0660 /modem/modem_image/HWT6260.fls.fls
+
+    chown radio radio /modem/nvm1
+    chown radio radio /modem/nvm2
+    chown radio radio /modem/modem_image
+    chown radio radio /modem/modem_image/HWT6260.fls
+    chown radio radio /modem/nvm1/calib.nvm
+    chown radio radio /modem/nvm1/dynamic.nvm
+    chown radio radio /modem/nvm1/static.nvm
+    chown radio radio /modem/modem_image/HWT6260.fls.fls
+#DTS2011121307804    x00186570	2011/12/16   change for managing modem image end
+#DTS2011102902318 	w00177577	2011/10/29	front add nvm1 nvm2 partition end
+
+# /* DTS2011081602280 x00186570 20110826 change the permissions for flashless download app */
+    chmod 0660 /sys/devices/virtual/usbswitch/usbsw/swstate
+    chown system system /sys/devices/virtual/usbswitch/usbsw/swstate
+    chmod 0660 /dev/ttyO0
+    chown radio radio /dev/ttyO0
+    chmod 0660 /dev/xmd-boot0
+    chown radio radio /dev/xmd-boot0
+
+    chmod 0660 /sys/devices/platform/xmm_boot/flashless
+    chmod 0660 /sys/devices/platform/xmm_boot/hsimode
+    chmod 0660 /sys/devices/platform/xmm_boot/hsi_drvmode
+
+    chown radio radio /sys/devices/platform/xmm_boot/flashless
+    chown radio radio /sys/devices/platform/xmm_boot/hsimode
+    chown radio radio /sys/devices/platform/xmm_boot/hsi_drvmode
+    chown system system /sys/bus/i2c/drivers/cma3000_accl/4-001c
+    chown system system /sys/bus/i2c/drivers/cma3000_accl/4-001c/enable
+    chown system system /sys/bus/i2c/drivers/cma3000_accl/4-001c/delay
+    chown system system /sys/devices/platform/sfh7741.1
+    chown system system /sys/devices/platform/sfh7741.1/state
+    chown system system /sys/bus/i2c/drivers/bmp085/4-0077
+    chown system system /sys/bus/i2c/drivers/bmp085/4-0077/enable
+    chown system system /sys/bus/i2c/drivers/hmc5843/4-001e
+    chown system system /sys/bus/i2c/drivers/hmc5843/4-001e/enable
+    chown system system /sys/bus/i2c/drivers/hmc5843/4-001e/rate
+
+# camera calibration - DCC folder permission
+    chown media media /data/misc/camera
+    chown media media /data/misc/camera/R12_MVEN001_LD1_ND0_IR0_SH0_FL0_SVEN001_DCCID43
+    chown media media /data/misc/camera/R12_MVEN002_LD2_ND0_IR0_SH0_FL0_SVEN002_DCCID42
+    chown media media /data/misc/camera/R8_MVEN002_LD2_ND0_IR0_SH0_FL1_SVEN003_DCCID1042
+
+#DTS2012021007117 w00172421 2012/02/10  modify i2c node authority begin
+# Change permissions on the governor (this is for debug only)
+    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    chmod 0664 /sys/kernel/debug/pm_debug/enable_off_mode
+    chmod 0664 /sys/devices/system/cpu/cpu1/online
+    chmod 666 /proc/cmdline
+
+#<DTS2011122002914 j00181309 2011/12/20 modify for btla stack to ics begin
+# change permissions for Bluetooth/FM/GPS
+    chmod 0777 /sys/class/rfkill/rfkill0/state
+    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
+    chmod 0777 /dev/ttyO1
+    chown bluetooth bluetooth /dev/ttyO1
+    chmod 0644 /proc/bluetooth/sleep/proto
+    chown bluetooth bluetooth /proc/bluetooth/sleep/proto
+#DTS2012020802054    j00181309       2012/02/08      bluetooth low power module end
+#DTS2012032901825    z00187939       2012/03/29      bluetooth quickswitch power control modify begin
+    chmod 0644 /proc/bluetooth/sleep/clkctrl
+    chown bluetooth bluetooth /proc/bluetooth/sleep/clkctrl
+#DTS2012032901825    z00187939       2012/03/29      bluetooth quickswitch power control modify end
+#< DTS2012022307787 c00182898 modify MMI test open nve0 faild add begin >
+    chown system system /dev/nve0
+    chmod 0660 /dev/nve0
+    chown system system /sys/devices/platform/omapdss/display0/s3d_enable
+    chown system system /sys/devices/platform/omapdss/display1/s3d_enable
+    chown system system /sys/devices/platform/omapdss/display1/s3d_type
+
+
+
+service pvrsrvinit /vendor/bin/pvrsrvinit
+	class core
+	user root
+	group root
+	oneshot
+
+# create filesystems if necessary
+service setup_fs /system/bin/setup_fs \
+		/dev/block/platform/omap/omap_hsmmc.1/by-name/cache \
+		/dev/block/platform/omap/omap_hsmmc.1/by-name/userdata
+        class core
+        user root
+        group root
+        oneshot
+
+
+#<DTS2011120101830     z00185222       2011/12/01                    add bcm4330 bluez code to ICS version begin
+#shared transport user space mgr service for Bluetooth, FM and GPS
+#service uim /system/bin/uim-sysfs
+#	class core
+#	user bluetooth
+#	group bluetooth net_bt_admin
+#DTS2011120101830     z00185222       2011/12/01                    add bcm4330 bluez code to ICS version end >
+
+###################################################
+# MSHIELD SMC Daemon - component required to store persistent data coming
+#   from the SMC PA to the device persistent storage
+###################################################
+service tf_daemon /system/bin/tf_daemon \
+    -d -c /vendor/etc/smc_normal_world_android_cfg.ini
+    class main
+    user root
+    group root
+    oneshot
+    disabled
+
+service smc_pa /system/bin/smc_pa_ctrl \
+    -c /vendor/etc/smc_normal_world_android_cfg.ini \
+    start /vendor/firmware/smc_pa.ift
+    class core
+    user root
+    group root
+    oneshot
+service bugreport /system/bin/bugmailer.sh -v
+	class main
+	disabled
+	oneshot
+	keycodes 16 25
+
+service sdcard /system/bin/sdcard /data/share /mnt/shell/emulated 1023 1023
+    class late_start
+#<DTS2011120400489     p00185344		  2011/12/04					add bcm4330 wifi  code to ICS version begin	
+#<DTS2011121504131    p00185344   2011/12/15   Merge WiFi-Direct into ICS E2 begin 
+service wpa_supplicant /system/bin/wpa_supplicant \
+	-iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -e/data/misc/wifi/entropy.bin 
+#DTS2011121504131    p00185344   2011/12/15   Merge WiFi-Direct into ICS E2 end > 
+       #   we will start as root and wpa_supplicant will switch to user wifi
+        #   after setting up the capabilities required for WEXT
+        #   user wifi
+        #   group wifi inet keystore
+        class main
+        socket wpa_wlan0 dgram 660 wifi wifi
+        disabled
+        oneshot
+
+service p2p_supplicant /system/bin/wpa_supplicant \
+	-iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -N \
+	-ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf -e/data/misc/wifi/entropy.bin -puse_p2p_group_interface=1
+        class main
+        user root
+        socket wpa_wlan0 dgram 660 wifi wifi
+        disabled
+        oneshot
+
+service dhcpcd_ /system/bin/dhcpcd -ABKL
+        class main
+        disabled
+        oneshot
+
+service dhcpcd_wlan0 /system/bin/dhcpcd -ABKL
+        class main
+        disabled
+        oneshot
+
+service dhcpcd_p2p /system/bin/dhcpcd -aABKL
+        class main
+        disabled
+        oneshot
+
+service dhcpcd_bnep0 /system/bin/dhcpcd -ABKL
+        class main
+        disabled
+        oneshot
+
+service iprenew_ /system/bin/dhcpcd -n
+        class main
+        disabled
+        oneshot
+
+service iprenew_wlan0 /system/bin/dhcpcd -n
+        class main
+        disabled
+        oneshot
+
+service iprenew_p2p /system/bin/dhcpcd -n
+        class main
+        disabled
+        oneshot
+
+service iprenew_bnep0 /system/bin/dhcpcd -n
+        class main
+        disabled
+        oneshot
+service rillogcat /system/bin/logcat -b radio -v time -r 4096 -n 10 -f /data/android_logs/rillogcat-log
+    class logcat
+    user root
+    group system
+    disabled
+
+# applogcat is triggered by projectmenu or setprop
+service applogcat /system/bin/logcat -v time -r 4096 -n 32 -f /data/android_logs/applogcat-log
+    class logcat
+    user root
+    group system
+    disabled
+
+# kmsglogcat is triggered by projectmenu or setprop
+service kmsglogcat /system/bin/kmsgcat -r 4096 -n 32 -f /data/android_logs/kmsgcat-log
+    class logcat
+    user root
+    group system
+    disabled
+
+service sleeplogcat /system/bin/sleeplogcat -t 10 -p /data/android_logs/sleeplog/
+    class sleeplog
+    user root
+    group system
+    disabled
+
+service chargelogcat /system/bin/chargelogcat -t 2 -p /data/android_logs/chargelog/
+    class chargelog
+    user root
+    group system
+    disabled
+
+service modemlogcat /system/bin/modemlogcat -r 50 -n 9 -p /data/android_logs/modemlogs/
+    class modemlog
+    user root
+    group system
+    disabled
+on property:wlan.driver.status=ok
+    chown wifi wifi /sys/devices/platform/wl1271/bt_coex_state
+
+service navl_server /system/bin/navd --android_log NAVD  -p3 -nav\"-c/system/etc/gps/config/pathconfigfile.txt\"
+	class main
+	disabled
+	oneshot
+service bcm_hciattach /system/bin/brcm_patchram_plus --enable_hci --baudrate 3000000 --use_baudrate_for_download --patchram /etc/bluetooth/BCM4330B1.hcd --no2bytes --enable_lpm --tosleep=50000 /dev/ttyO1
+    user root
+    group bluetooth net_bt_admin system
+    disabled
+    oneshot
+    
+service hci_dev_up /system/bin/hci_dev_state --dev_up
+    user root
+    group bluetooth system
+    disabled
+    oneshot
+
+service hci_dev_down /system/bin/hci_dev_state --dev_down
+    user root
+    group bluetooth system
+    disabled
+    oneshot
+service chip_power_on /system/bin/sh /system/etc/bluetooth/init.bcm.chip_on.sh
+    user root
+    group system
+    disabled
+    oneshot
+
+service chip_power_off /system/bin/sh /system/etc/bluetooth/init.bcm.chip_off.sh
+    user root
+    group system
+    disabled
+    oneshot
+service dhcpcd_brcm-pan /system/bin/dhcpcd -ABKL
+	class main
+	disabled
+	oneshot
+
+service iprenew_brcm-pan /system/bin/dhcpcd -n
+	class main
+	disabled
+	oneshot
+	
+service btld /system/bin/logwrapper /system/bin/btld -lpm 1 -hb 3000000 -snr 8
+    user root
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+on property:service.brcm.bt.soft_onoff=1
+    start btld
+
+on property:service.brcm.bt.soft_onoff=0
+    stop btld
+service bluetoothd /system/bin/logwrapper /system/bin/bluetoothd -d -n
+    class main
+    socket bluetooth stream 660 bluetooth bluetooth
+    socket dbus_bluetooth stream 660 bluetooth bluetooth
+   group bluetooth net_bt_admin misc
+    disabled
+#DTS2012011707420 z00183953 2012
+service kbtld /system/bin/sh /system/etc/bluetooth/kill-btld.sh
+	user root
+	group system bluetooth
+	disabled
+	oneshot
+
+service kbluetoothd /system/bin/sh /system/etc/bluetooth/kill-bluetoothd.sh
+	user root
+	group system bluetooth
+	disabled
+	oneshot
+
+
+service nvm-server /system/bin/nvm_server
+    class main
+    socket nvm-ctl stream 660 radio radio
+    user radio
+    group radio
+
+service dhcpcd_brcm-pan /system/bin/dhcpcd -ABKL
+	class main
+	disabled
+	oneshot
+
+service iprenew_brcm-pan /system/bin/dhcpcd -n
+	class main
+	disabled
+	oneshot
+
+
+
+service atcmdserver  /system/bin/atcmdserver
+    class main
+    user root
+    oneshot
+
+
+

@@ -1,0 +1,72 @@
+on early-init
+
+    start ueventd
+
+on init
+    export PATH /sbin
+    export LD_LIBRARY_PATH .:/sbin
+    export ANDROID_ROOT /system
+    export ANDROID_DATA /data
+    export EXTERNAL_STORAGE /sdcard
+
+    symlink /system/etc /etc
+    symlink /sbin/busybox /sbin/sh
+
+    chmod 0755 /sbin/busybox
+
+    mkdir /boot
+    mkdir /system
+    mkdir /cust
+    mkdir /data
+    mkdir /cache
+    mkdir /sdcard
+    mount /tmp /tmp tmpfs
+
+on boot
+    ifup lo
+    hostname localhost
+    domainname localdomain
+
+# leds
+
+    chown system system /sys/class/leds/red/brightness
+    chown system system /sys/class/leds/red/blink
+    chown system system /sys/class/leds/green/brightness
+    chown system system /sys/class/leds/green/blink
+
+    class_start default
+
+service ueventd /sbin/ueventd
+    critical
+
+service chargeservice /sbin/chargeservice
+	oneshot
+
+service dmesg /sbin/busybox dmesg -n 1
+	oneshot
+
+service recovery /sbin/recovery
+
+service adbd /sbin/adbd recovery
+    disabled
+
+# Always start adbd on userdebug and eng builds
+
+on property:ro.debuggable=1
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 12D1
+    write /sys/class/android_usb/android0/idProduct 1052
+    write /sys/class/android_usb/android0/iManufacturer $ro.product.manufacturer
+    write /sys/class/android_usb/android0/iProduct $ro.product.model
+    write /sys/class/android_usb/android0/iSerial cleanup
+    write /sys/class/android_usb/f_mass_storage/luns sdcard
+    write /sys/class/android_usb/f_mass_storage/lun/file none
+    write /sys/class/android_usb/android0/functions modem,nmea,mass_storage,adb,diag
+    write /sys/class/android_usb/android0/enable 1
+    start adbd
+    setprop service.adb.root 1
+
+on property:service.adb.root=1
+    write /sys/class/android_usb/android0/enable 0
+    restart adbd
+    write /sys/class/android_usb/android0/enable 1
